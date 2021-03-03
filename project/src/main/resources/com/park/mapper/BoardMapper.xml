@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<!-- mapper의 namespace 속성값은  Mapper 인터페이스와 동일한 이름을 준다 -->
+<mapper namespace="com.park.mapper.BoardMapper">
+
+<!-- id값은 메서드의 이름과 동일하게 작성 resultType 속성의 값은 select 쿼리의 결과를 특정 클래스의 객체로 만들기 위해 설정 -->
+<!-- CDATA는 XML에서 부등호를 사용하기 위해 사용 -->
+<select id="getList" resultType="com.park.domain.BoardVO">
+<![CDATA[
+select * from tbl_board where bno > 0
+]]>
+</select>
+
+<insert id='insert'>
+	insert into tbl_board (bno, title, content, writer) values (seq_board.nextval, #{title}, #{content}, #{writer})
+</insert>
+
+<insert id='insertSelectKey'>
+	<selectKey keyProperty="bno" order="BEFORE" resultType="long">
+		select seq_board.nextval from dual <!-- 이 쿼리를 먼저 실행되고 여기서 생성한 결과를 이용해서 bno 값으로 처리 -->
+	</selectKey>
+	
+	insert into tbl_board(bno, title, content, writer) values(#{bno}, #{title}, #{content}, #{writer})
+</insert>
+
+<select id="read" resultType="com.park.domain.BoardVO">
+	select * from tbl_board where bno = #{bno}
+</select>
+
+<delete id="delete">
+	delete from tbl_board where bno = #{bno}
+</delete>
+
+<update id="update">
+	update tbl_board set title=#{title}, content=#{content}, writer=#{writer}, updatedate =sysdate where bno=#{bno} <!-- 수정시간은 최신화되지만 regdate는 최신화 되지 않는다 -->
+</update>
+
+</mapper>
