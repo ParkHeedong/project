@@ -10,6 +10,7 @@ import com.park.domain.BoardVO;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
+import oracle.net.ano.Service;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
@@ -78,4 +79,6 @@ public class BoardMapperTest {
 		int count = mapper.update(board);
 		log.info("UPDATE COUNT : " + count);
 	}
+	
+
 }
