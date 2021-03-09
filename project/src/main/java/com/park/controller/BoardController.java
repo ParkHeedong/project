@@ -43,10 +43,10 @@ public class BoardController {
 		
 	}
 	
-	@GetMapping("/get")
+	@GetMapping({"/get", "/modify"})
 	public void get(@RequestParam("bno") Long bno, Model model) {
 		
-		log.info("/get");
+		log.info("/get or modify");
 		model.addAttribute("board", service.get(bno)); //BoardServiceImpl 객체의 get() 결과를 담아서 전달(addAttribute)
 	}
 	
@@ -70,6 +70,11 @@ public class BoardController {
 		}
 		
 		return "redirect:/board/list";
+		
+	}
+	
+	@GetMapping("/register")
+	public void register()	{
 		
 	}
 }
