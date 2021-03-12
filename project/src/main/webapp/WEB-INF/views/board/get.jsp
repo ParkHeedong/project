@@ -40,8 +40,12 @@
         <button data-oper='modify' class="btn btn-default">Modify</button>
         <button data-oper='list' class="btn btn-info">List</button>
         
+        <!--cri라는 이름으로 구성된 Criteria 객체를 이용해서 pageNum과 amount 값을 태그로 구성하고 버튼을 클릭하면 정상적으로 목록 페이지로 이동하게 처리한다  -->
+        <!-- ex) 3번 페이지에서 게시글을 확인하고 다시 리스트를 눌렀을 때 다시 3번으로 오게 하는 것 -->
         <form id='operForm' action="/board/modify" method="get">
         	 <input type='hidden' id='bno' name='bno' value='<c:out value="${board.bno}"/>'>
+        	 <input type='hidden' name='pageNum' value='<c:out value="${cri.pageNum}"/>'> 
+        	 <input type='hidden' name='amount' value='<c:out value="${cri.amount}"/>'>
         </form>
       </div>
       <!--  end panel-body -->

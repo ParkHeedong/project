@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.park.domain.BoardVO;
+import com.park.domain.Criteria;
 import com.park.mapper.BoardMapper;
 
 import lombok.AllArgsConstructor;
@@ -25,12 +26,20 @@ public class BoardServiceImpl implements BoardService {
 		mapper.insertSelectKey(board);
 	}
 	
+	//@Override
+	//public List<BoardVO> getList() {
+		
+	//	log.info("getList...........");
+		
+	//	return mapper.getList();
+	//}
+	
 	@Override
-	public List<BoardVO> getList() {
+	public List<BoardVO> getList(Criteria cri){
 		
-		log.info("getList...........");
+		log.info("get List with criteria : " + cri);
 		
-		return mapper.getList();
+		return mapper.getListPaging(cri);
 	}
 
 	@Override
@@ -56,6 +65,14 @@ public class BoardServiceImpl implements BoardService {
 		log.info("remove.........." + bno);
 		
 		return mapper.delete(bno) == 1; //정상적으로 수정,삭제가 이루어지면 1이라는 값이 반환되기 때문에 '=='연산자를 이용해서 true/false를 처리할 수 있다.
+	}
+	
+	@Override
+	public int getTotal(Criteria cri) {
+		
+		log.info("get total count");
+		return mapper.getTotalCount(cri);
+		
 	}
 
 

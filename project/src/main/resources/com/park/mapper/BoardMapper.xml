@@ -38,4 +38,20 @@ select * from tbl_board where bno > 0
 	update tbl_board set title=#{title}, content=#{content}, writer=#{writer}, updatedate =sysdate where bno=#{bno} <!-- 수정시간은 최신화되지만 regdate는 최신화 되지 않는다 -->
 </update>
 
+<select id="getListPaging" resultType="com.park.domain.BoardVO"> <!-- CDATA는 XML에서 사용할 수 없는 부등호를 사용하기 위함이다. -->
+	<![CDATA[ 
+		select bno, title, content, writer, regdate, updatedate from
+		(
+			select /*+INDEX_DESC(tbl_board pk_board) */
+			 rownum rn, bno, title, content, writer, regdate, updatedate
+			 from tbl_board where rownum <= #{pageNum} * #{amount}
+		)
+		where rn > (#{pageNum} - 1) * #{amount}
+		]]><!-- pageNum : 페이지 번호 amount : 데이터 수 -->
+</select>
+
+<select id="getTotalCount" resultType="int">
+	select count(*) from tbl_board where bno > 0
+</select>
+
 </mapper>

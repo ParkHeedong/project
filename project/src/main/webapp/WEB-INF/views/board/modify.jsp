@@ -17,12 +17,14 @@
 	<div class="col-lg-12">
 		<div class="panel panel-default">
 
-			<div class="panel-heading">Board Modify</div>
+			<div class="panel-heading">Board Modify Page</div>
 			<!-- /.panel-heading -->
 			<div class="panel-body">
 
+				<!-- POST 방식으로 처리하는 부분을 위해 form 태그로 내용들을 감싼다. -->
 				<form role="form" action="/board/modify" method="post">
-					<!-- POST 방식으로 처리하는 부분을 위해 form 태그로 내용들을 감싼다. -->
+					<input type='hidden' name='pageNum' value='<c:out value="${cri.pageNum}"/>'> 
+        	 		<input type='hidden' name='amount' value='<c:out value="${cri.amount}"/>'>	
 
 					<div class="form-group">
 						<label>Bno</label> <input class="form-control" name='bno'
@@ -95,7 +97,12 @@
 			} else if (operation === 'list') {
 				//move to list
 				formObj.attr("action", "/board/list").attr("method", "get"); //list버튼을 누르면 action 속성과 method 속성을 변경함
+				var pageNumTag = $("input[name='pageNum']").clone();//list버튼을 클릭하면 <form>태그에서 필요한 부분만 복사해서 잠시 보관한다.
+				var amountTag = $("input[name='amount']").clone();
+				
 				formObj.empty(); //리스트로 넘어갈 때는 아무런 파라미터가 없기 때문에 form태그의 모든 내용 지우고 submit 진행
+				formObj.append(pageNumTag); //다시 필요한 태그들만 추가해서 /board/list를 호출하는 형태를 이용한다.
+				formObj.append(amountTag);
 			}
 
 			formObj.submit();

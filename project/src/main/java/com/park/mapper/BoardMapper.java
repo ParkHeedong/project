@@ -5,11 +5,14 @@ import java.util.List;
 import org.apache.ibatis.annotations.Select;
 
 import com.park.domain.BoardVO;
+import com.park.domain.Criteria;
 
 public interface BoardMapper {
 
 	//@Select("select * from tbl_board where bno > 0") BoardMapper.xml에서 sql문에 처리 되었으니 주석처리.
 	public List<BoardVO> getList();
+	
+	public List<BoardVO> getListPaging(Criteria cri);
 	
 	public void insert(BoardVO board);
 	
@@ -20,4 +23,6 @@ public interface BoardMapper {
 	public int delete(Long bno);
 	
 	public int update(BoardVO board);
+	
+	public int getTotalCount(Criteria cri);
 }

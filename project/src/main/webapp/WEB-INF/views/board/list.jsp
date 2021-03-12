@@ -38,7 +38,7 @@
                                 <!-- /board/list를 실행했을 때 이미 BoardController는 Model을 이용해서 게시물의 목록을 list라는 이름으로 담아서 전달했으므로 list.jsp에서는 이를 출력 -->
                                 <tr>
                                 	<td><c:out value="${board.bno}" /></td>
-                                	<td><a href='/board/get?bno=<c:out value="${board.bno }" />'>
+                                	<td><a class='move' href='<c:out value="${board.bno }" />'>
 									<c:out value="${board.title}" /></a></td>
                                     <td><c:out value="${board.writer}" /></td>
                                 	<td><fmt:formatDate pattern="yyyy-MM-dd" value="${board.regdate}" /></td>
@@ -48,6 +48,37 @@
                             </table>
                             <!-- /.table-responsive -->
                             
+                            <!-- 화면 밑에 페이지 번호가 나오게 함 -->
+							<div class='pull-right'>
+								<ul class="pagination">
+		
+									<c:if test="${pageMaker.prev}">
+										<li class="paginate_button previous"><a	href="${pageMaker.startPage-1}">Previous</a></li>
+									</c:if>
+		
+									<c:forEach var="num" begin="${pageMaker.startPage}"	end="${pageMaker.endPage}">
+										<li class="paginate_button  ${pageMaker.cri.pageNum == num ? "active":""} ">
+											<a href="${num}">${num}</a>
+										</li>
+									</c:forEach>
+		
+									<c:if test="${pageMaker.next}">
+										<li class="paginate_button next">
+										<a href="${pageMaker.endPage +1 }">Next</a></li>
+									</c:if>
+								</ul>
+							</div>
+							<!--  end Pagination -->
+						</div>
+						
+						
+						<!-- <form>태그를 추ㅏ해서 url의 이동을 처리 -->
+						<form id='actionForm' action="/board/list" method='get'>
+							<input type='hidden' name='pageNum'	value='${pageMaker.cri.pageNum}'> 
+							<input type='hidden' name='amount' value='${pageMaker.cri.amount}'>
+						</form>
+						
+							
 				            <!-- Modal  추가 -->
 							<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 								<div class="modal-dialog">
@@ -102,6 +133,29 @@
             	$("#regBtn").on("click", function(){
             		self.location ="/board/register";
             	});
+            	
+            	//게시물의 제목을 클릭했을 때 이동하도록 이벤트 처리
+            	//<input>태그를 만들어서 <form>태그에 추가로 bno 값을 전송하고 <form>태그의 action은 '/board/get'으로 변경한다.
+            	$(".move").on("click",function(e) {
+
+							e.preventDefault();
+							actionForm.append("<input type='hidden' name='bno' value='"+ $(this).attr("href") + "'>");
+							actionForm.attr("action", "/board/get");
+							actionForm.submit();
+
+						});
+            	
+            	var actionForm = $("#actionForm"); //<a>태그가 원래의 동작을 못하도록 처리
+
+				$(".paginate_button a").on("click", function(e) {
+
+						e.preventDefault();
+
+						console.log('click');
+
+						actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+						actionForm.submit();
+					});
             });
             
             </script>

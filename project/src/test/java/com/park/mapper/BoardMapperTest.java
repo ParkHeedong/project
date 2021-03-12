@@ -1,5 +1,7 @@
 package com.park.mapper;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.park.domain.BoardVO;
+import com.park.domain.Criteria;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -80,5 +83,17 @@ public class BoardMapperTest {
 		log.info("UPDATE COUNT : " + count);
 	}
 	
+	@Test
+	public void testPaing() { //페이징 테스트 완료 (2페이지의 내용이 정상적으로 나옴)
+		
+		Criteria cri = new Criteria();
+		
+		cri.setPageNum(3); //setter를 이용해서 1,2,3을 넣어보며 해당 페이지가 나오는지 확인.(완료)
+		cri.setAmount(10);
+		
+		List<BoardVO> list = mapper.getListPaging(cri);
+		
+		list.forEach(board -> log.info(board));
+	}
 
 }
