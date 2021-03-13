@@ -46,36 +46,59 @@
                                 </tr>
                                 </c:forEach>
                             </table>
-                            <!-- /.table-responsive -->
                             
-                            <!-- 화면 밑에 페이지 번호가 나오게 함 -->
-							<div class='pull-right'>
-								<ul class="pagination">
-		
-									<c:if test="${pageMaker.prev}">
-										<li class="paginate_button previous"><a	href="${pageMaker.startPage-1}">Previous</a></li>
-									</c:if>
-		
-									<c:forEach var="num" begin="${pageMaker.startPage}"	end="${pageMaker.endPage}">
-										<li class="paginate_button  ${pageMaker.cri.pageNum == num ? "active":""} ">
-											<a href="${num}">${num}</a>
-										</li>
-									</c:forEach>
-		
-									<c:if test="${pageMaker.next}">
-										<li class="paginate_button next">
-										<a href="${pageMaker.endPage +1 }">Next</a></li>
-									</c:if>
-								</ul>
+                            <div class='row'>
+								<div class="col-lg-12">
+								
+									<form id='searchForm' action="/board/list" method='get'>
+										<select name='type'>
+											<option value="" <c:out value="${pageMaker.cri.type == null?'selected':''}"/>>--</option>
+											<option value="T" <c:out value="${pageMaker.cri.type eq 'T'?'selected':''}"/>>제목</option>
+											<option value="C" <c:out value="${pageMaker.cri.type eq 'C'?'selected':''}"/>>내용</option>
+											<option value="W" <c:out value="${pageMaker.cri.type eq 'W'?'selected':''}"/>>작성자</option>
+											<option value="TC" <c:out value="${pageMaker.cri.type eq 'TC'?'selected':''}"/>>제목 or 내용</option>
+											<option value="TW" <c:out value="${pageMaker.cri.type eq 'TW'?'selected':''}"/>>제목 or 작성자</option>
+											<option value="TWC" <c:out value="${pageMaker.cri.type eq 'TWC'?'selected':''}"/>>제목 or 작성자 or 내용</option>
+										</select> 
+										<input type='text' name='keyword' value='<c:out value="${pageMaker.cri.keyword}"/>' /> 
+										<input type='hidden' name='pageNum' value='<c:out value="${pageMaker.cri.pageNum}"/>' /> 
+										<input type='hidden' name='amount' value='<c:out value="${pageMaker.cri.amount}"/>' />
+										<button class='btn btn-default'>Search</button>
+									</form>
+								</div>
 							</div>
-							<!--  end Pagination -->
-						</div>
-						
-						
-						<!-- <form>태그를 추ㅏ해서 url의 이동을 처리 -->
+								
+								<!-- 화면 밑에 페이지 번호가 나오게 함 -->
+								<div class='pull-right'>
+									<ul class="pagination">
+			
+										<c:if test="${pageMaker.prev}">
+											<li class="paginate_button previous">
+											<a href="${pageMaker.startPage-1}">Previous</a></li>
+										</c:if>
+			
+										<c:forEach var="num" begin="${pageMaker.startPage}"
+											end="${pageMaker.endPage}">
+											<li class="paginate_button  ${pageMaker.cri.pageNum == num ? "active":""} ">
+												<a href="${num}">${num}</a>
+											</li>
+										</c:forEach>
+			
+										<c:if test="${pageMaker.next}">
+											<li class="paginate_button next">
+											<a href="${pageMaker.endPage +1 }">Next</a></li>
+										</c:if>
+									</ul>
+								</div>
+								<!--  end Pagination -->
+							</div>
+						<!-- <form>태그를 추가해서 url의 이동을 처리 -->
+						<!-- 검색 조건과 키워드는 같이 전달되어야 함 -->
 						<form id='actionForm' action="/board/list" method='get'>
 							<input type='hidden' name='pageNum'	value='${pageMaker.cri.pageNum}'> 
 							<input type='hidden' name='amount' value='${pageMaker.cri.amount}'>
+							<input type='hidden' name='type' value='<c:out value="${ pageMaker.cri.type }"/>'>
+							<input type='hidden' name='keyword' value='<c:out value="${ pageMaker.cri.keyword }"/>'>
 						</form>
 						
 							
@@ -134,16 +157,6 @@
             		self.location ="/board/register";
             	});
             	
-            	//게시물의 제목을 클릭했을 때 이동하도록 이벤트 처리
-            	//<input>태그를 만들어서 <form>태그에 추가로 bno 값을 전송하고 <form>태그의 action은 '/board/get'으로 변경한다.
-            	$(".move").on("click",function(e) {
-
-							e.preventDefault();
-							actionForm.append("<input type='hidden' name='bno' value='"+ $(this).attr("href") + "'>");
-							actionForm.attr("action", "/board/get");
-							actionForm.submit();
-
-						});
             	
             	var actionForm = $("#actionForm"); //<a>태그가 원래의 동작을 못하도록 처리
 
@@ -156,6 +169,38 @@
 						actionForm.find("input[name='pageNum']").val($(this).attr("href"));
 						actionForm.submit();
 					});
+            	
+				//게시물의 제목을 클릭했을 때 이동하도록 이벤트 처리
+            	//<input>태그를 만들어서 <form>태그에 추가로 bno 값을 전송하고 <form>태그의 action은 '/board/get'으로 변경한다.
+            	$(".move").on("click",function(e) {
+
+							e.preventDefault();
+							actionForm.append("<input type='hidden' name='bno' value='"+ $(this).attr("href") + "'>");
+							actionForm.attr("action", "/board/get");
+							actionForm.submit();
+
+						});
+            	
+				var searchForm = $("#searchForm");
+
+				$("#searchForm button").on("click",function(e) {
+
+					if (!searchForm.find("option:selected").val()) { //검색 항목이 선택되지 않으면 나오는 알림
+						alert("검색종류를 선택하세요");
+						return false;
+					}
+
+					if (!searchForm.find("input[name='keyword']").val()) { //키워드를 입력하지 않으면 나오는 알림
+						alert("키워드를 입력하세요");
+						return false;
+					}
+
+					searchForm.find("input[name='pageNum']").val("1"); //검색 버튼 클릭하면 <form>태그의 전송은 막고 페이지의 번호는 1이 되도록 처리
+					e.preventDefault();
+
+					searchForm.submit();
+
+				});
             });
             
             </script>

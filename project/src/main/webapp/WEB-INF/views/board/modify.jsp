@@ -25,6 +25,8 @@
 				<form role="form" action="/board/modify" method="post">
 					<input type='hidden' name='pageNum' value='<c:out value="${cri.pageNum}"/>'> 
         	 		<input type='hidden' name='amount' value='<c:out value="${cri.amount}"/>'>	
+        	 		<input type='hidden' name='type' value='<c:out value="${cri.type}"/>'>
+        	 		<input type='hidden' name='keyword' value='<c:out value="${cri.keyword}"/>'>
 
 					<div class="form-group">
 						<label>Bno</label> <input class="form-control" name='bno'
@@ -99,10 +101,14 @@
 				formObj.attr("action", "/board/list").attr("method", "get"); //list버튼을 누르면 action 속성과 method 속성을 변경함
 				var pageNumTag = $("input[name='pageNum']").clone();//list버튼을 클릭하면 <form>태그에서 필요한 부분만 복사해서 잠시 보관한다.
 				var amountTag = $("input[name='amount']").clone();
+				var keywordTag = $("input[name='keyword']").clone();
+				var typeTag = $("input[name='type']").clone();
 				
 				formObj.empty(); //리스트로 넘어갈 때는 아무런 파라미터가 없기 때문에 form태그의 모든 내용 지우고 submit 진행
 				formObj.append(pageNumTag); //다시 필요한 태그들만 추가해서 /board/list를 호출하는 형태를 이용한다.
 				formObj.append(amountTag);
+				formObj.append(keywordTag);
+				formObj.append(typeTag);
 			}
 
 			formObj.submit();
