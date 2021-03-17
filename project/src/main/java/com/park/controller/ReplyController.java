@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.park.domain.Criteria;
+import com.park.domain.ReplyPageDTO;
 import com.park.domain.ReplyVO;
 import com.park.service.ReplyService;
 
@@ -45,15 +46,15 @@ public class ReplyController {
 	
 	//특정 게시글의 댓글 조회
 	@GetMapping(value = "/pages/{bno}/{page}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<List<ReplyVO>> getList( @PathVariable("page") int page, @PathVariable("bno") Long bno){
-		
-		log.info("getList..........");
-		
+	public ResponseEntity<ReplyPageDTO> getList( @PathVariable("page") int page, @PathVariable("bno") Long bno){
+			
 		Criteria cri = new Criteria(page,10);
 		
-		log.info(cri);
+		log.info("get Reply List bno: " + bno);
+		
+		log.info("cri : " + cri);
 
-		return new ResponseEntity<>(service.getList(cri, bno), HttpStatus.OK);
+		return new ResponseEntity<>(service.getListPage(cri, bno), HttpStatus.OK);
 	}
 
 	//댓글 조회

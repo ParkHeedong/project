@@ -20,5 +20,7 @@ public interface ReplyMapper {
 	public List<ReplyVO> getListPaging(@Param("cri") Criteria cri, @Param("bno") Long bno); 
 	//MyBaits는 @Param을 이용해서 두 개 이상의 데이터를 파라미터로 전달한다.
 	//페이징 처리는 기존과 동일하게 Criteria 이용.
+	
+	public int getCountByBno(Long bno); //댓글의 페이징 처리를 위해 해당 게시물의 전체 댓글 수를 파악해야 함
 
 }

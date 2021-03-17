@@ -86,6 +86,17 @@ public class ReplyMapperTest {
 		
 		replies.forEach(reply -> log.info(reply));
 	}
+	
+	@Test
+	public void testList2()	{
+		
+		Criteria cri = new Criteria(2, 10);
+		
+		//327681L
+		List<ReplyVO> replies = mapper.getListPaging(cri, 86062L);
+		
+		replies.forEach(reply -> log.info(reply));
+	}
 }
 
 //ReplyMapper를 사용 가능한지 테스트
