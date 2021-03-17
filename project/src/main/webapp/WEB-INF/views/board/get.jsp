@@ -93,6 +93,44 @@
   <!-- ./ end row -->
 </div>
 
+<!-- Modal -->
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"
+                aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="myModalLabel">REPLY MODAL</h4>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label>Reply</label> 
+                <input class="form-control" name='reply' value='New Reply!!!!'>
+              </div>      
+              <div class="form-group">
+                <label>Replyer</label> 
+                <input class="form-control" name='replyer' value='replyer'>
+              </div>
+              <div class="form-group">
+                <label>Reply Date</label> 
+                <input class="form-control" name='replyDate' value=''>
+              </div>
+      
+            </div>
+			  <div class="modal-footer">
+		        <button id='modalModBtn' type="button" class="btn btn-warning">Modify</button>
+		        <button id='modalRemoveBtn' type="button" class="btn btn-danger">Remove</button>
+		        <button id='modalRegisterBtn' type="button" class="btn btn-primary">Register</button>
+		        <button id='modalCloseBtn' type="button" class="btn btn-default">Close</button>
+		      </div>          
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+
 <script type="text/javascript" src="/resources/js/reply.js"></script>
 
 <script>
@@ -129,6 +167,98 @@ $(document).ready(function () {
  	}//end showList */	
 
 
+ 	//모달창
+    var modal = $(".modal");
+	var modalInputReply = modal.find("input[name='reply']");
+	var modalInputReplyer = modal.find("input[name='replyer']");
+	var modalInputReplyDate = modal.find("input[name='replyDate']");
+
+	var modalModBtn = $("#modalModBtn");
+	var modalRemoveBtn = $("#modalRemoveBtn");
+	var modalRegisterBtn = $("#modalRegisterBtn");
+	
+	//New Reply 버튼 처리 이벤트
+	$("#addReplyBtn").on("click", function(e){
+		
+		modal.find("input").val("");
+		modalInputReplyDate.closest("div").hide();
+		modal.find("button[id != 'modalCloseBtn']").hide();
+		
+		modalRegisterBtn.show();
+		
+		$(".modal").modal("show");
+	});
+	
+	//모달창에서 댓글 추가
+	modalRegisterBtn.on("click", function(e){
+		
+		var reply = {
+				reply:modalInputReply.val(),
+				replyer:modalInputReplyer.val(),
+				bno:bnoValue
+		};
+		replyService.add(reply, function(result){
+			
+			alert(result);
+			
+			modal.find("input").val("");
+			modal.modal("hide");
+			
+			showList(1);
+		});
+	});
+	
+	//댓글 조회 클릭 이벤트 처리(모달)
+	$(".chat").on("click", "li", function(e){
+		
+		var rno = $(this).data("rno");
+		
+		replyService.get(rno, function(reply){
+			
+			//reply.reply에서 첫번째 reply는 Ajax를 통해서 조회해온 자바스크립트로 된 객체를 reply 라고 변수 처리한 것이다.
+			modalInputReply.val(reply.reply);
+			modalInputReplyer.val(reply.replyer);
+			modalInputReplyDate.val(replyService.displayTime( reply.replydate)).attr("readonly", "readonly");
+			modal.data("rno", reply.rno);
+			
+			modal.find("button[id !='modalCloseBtn']").hide();
+			modalModBtn.show();
+			modalRemoveBtn.show();
+			
+			$(".modal").modal("show");
+		});
+		
+	});
+	
+	//댓글 수정(모달)
+	modalModBtn.on("click", function(e){
+    	  
+	   	var reply = {rno:modal.data("rno"), reply: modalInputReply.val()};
+	   	  
+	   	 replyService.update(reply, function(result){
+	   	        
+	   	   alert(result);
+	   	   modal.modal("hide");
+	   	   showList(1);      //현재 보고 있는 댓글 페이지의 번호를 호출한다.(새로운 댓글을 수정하고 나서 현재 보고 있던 페이지 호출)
+	   	    
+	   	 });
+	   	  
+	});
+	
+	//댓글 제거(모달)
+	modalRemoveBtn.on("click", function (e){
+	   	  
+	   	var rno = modal.data("rno");
+	   	  
+	   	  replyService.remove(rno, function(result){
+	   	        
+	   	     alert(result);
+	   	     modal.modal("hide");
+	   	     showList(1);    //현재 보고 있는 댓글 페이지의 번호를 호출한다. (새로운 댓글을 수정하고 나서 현재 보고 있던 페이지 호출)
+	   	      
+	   	 });
+	   	  
+	 });
 });
 	
 </script>
