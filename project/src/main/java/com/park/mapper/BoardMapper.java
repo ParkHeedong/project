@@ -2,7 +2,7 @@ package com.park.mapper;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Param;
 
 import com.park.domain.BoardVO;
 import com.park.domain.Criteria;
@@ -25,4 +25,6 @@ public interface BoardMapper {
 	public int update(BoardVO board);
 	
 	public int getTotalCount(Criteria cri);
+	
+	public void updateReplyCnt(@Param("bno") Long bno, @Param("amount") int amount); //게시물의 번호와 증가나 감소를 의미하는 amount
 }

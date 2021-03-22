@@ -35,7 +35,12 @@ select * from tbl_board where bno > 0
 </delete>
 
 <update id="update">
-	update tbl_board set title=#{title}, content=#{content}, writer=#{writer}, updatedate =sysdate where bno=#{bno} <!-- 수정시간은 최신화되지만 regdate는 최신화 되지 않는다 -->
+	update tbl_board 
+	set title=#{title}, 
+	content=#{content}, 
+	writer=#{writer}, 
+	updatedate =sysdate 
+	where bno=#{bno} <!-- 수정시간은 최신화되지만 regdate는 최신화 되지 않는다 -->
 </update>
 
 <!-- <sql>태그는 id라는 속성을 이용해서 필요한 경우에 동일한 sql의 일부를 재사용할 수 있게 한다 -->
@@ -61,10 +66,11 @@ select * from tbl_board where bno > 0
 
 <select id="getListPaging" resultType="com.park.domain.BoardVO"> <!-- CDATA는 XML에서 사용할 수 없는 부등호를 사용하기 위함이다. -->
 	<![CDATA[ 
-		select bno, title, content, writer, regdate, updatedate from
+		select bno, title, content, writer, regdate, updatedate, replycnt
+		from
 		(
 			select /*+INDEX_DESC(tbl_board pk_board) */
-			 rownum rn, bno, title, content, writer, regdate, updatedate
+			 rownum rn, bno, title, content, writer, regdate, updatedate, replycnt
 			 from tbl_board where
 			 ]]>
 			 
@@ -85,4 +91,7 @@ select * from tbl_board where bno > 0
 	 bno > 0
 </select>
 
+<update id="updateReplyCnt">
+		update tbl_board set replycnt = replycnt + #{amount} where bno = #{bno}
+</update>
 </mapper>
