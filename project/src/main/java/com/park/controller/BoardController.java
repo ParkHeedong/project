@@ -51,8 +51,15 @@ public class BoardController {
 	@PostMapping("/register")
 	public String register(BoardVO board, RedirectAttributes rttr) { //RedirectAttributes는 등록 작업이 끝난 후 다시 목록 화면으로 이동하기 위함
 		
+		log.info("==================================");
+		
 		log.info("register : " + board);
 		
+		if(board.getAttachList() != null) {
+			board.getAttachList().forEach(attach -> log.info(attach));
+		}
+		
+		log.info("==================================");
 		service.register(board);
 		
 		rttr.addFlashAttribute("result", board.getBno()); //새롭게 등록된 게시물의 번호를 같이 전달
