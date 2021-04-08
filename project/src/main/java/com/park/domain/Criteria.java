@@ -1,5 +1,7 @@
 package com.park.domain;
 
+import org.springframework.web.util.UriComponentsBuilder;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -29,5 +31,17 @@ public class Criteria {
 	public String[]	getTypeArr() {
 		
 		return type == null? new String[] {}: type.split("");
+	}
+	
+	//게시물 삭제 후에 페이지 번호나 검색 조건을 유지하면서 이동하기 위해서는 'redirect'에 필요한 파라미터들을 매번 추가해야 하는 불편함이 있는데 이를 처리하기위함.
+	public String getListLink() {
+		
+		UriComponentsBuilder builder = UriComponentsBuilder.fromPath("")
+				.queryParam("pageNum", this.pageNum)
+				.queryParam("amount", this.getAmount())
+				.queryParam("type", this.getType())
+				.queryParam("keyword", this.getKeyword());
+		
+		return builder.toUriString();
 	}
 }

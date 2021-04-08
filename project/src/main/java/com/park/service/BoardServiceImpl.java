@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.park.domain.BoardAttachVO;
 import com.park.domain.BoardVO;
 import com.park.domain.Criteria;
 import com.park.mapper.BoardAttachMapper;
@@ -18,6 +19,7 @@ import lombok.extern.log4j.Log4j;
 @Service
 public class BoardServiceImpl implements BoardService {
 	
+	//BoardMapper, BoardAttachMapper 주입
 	@Setter(onMethod_= @Autowired)
 	private BoardMapper mapper;
 	
@@ -76,10 +78,13 @@ public class BoardServiceImpl implements BoardService {
 		return mapper.update(board) == 1; //정상적으로 수정,삭제가 이루어지면 1이라는 값이 반환되기 때문에 '=='연산자를 이용해서 true/false를 처리할 수 있다.
 	}
 
+	@Transactional
 	@Override
 	public boolean remove(Long bno) {
 		
 		log.info("remove.........." + bno);
+		
+		attachMapper.deleteAll(bno); //첨부파일 삭제와 식제 게시물의 삭제가 같이 처리되도록 트랜잭션 하에서 호출
 		
 		return mapper.delete(bno) == 1; //정상적으로 수정,삭제가 이루어지면 1이라는 값이 반환되기 때문에 '=='연산자를 이용해서 true/false를 처리할 수 있다.
 	}
@@ -88,9 +93,20 @@ public class BoardServiceImpl implements BoardService {
 	public int getTotal(Criteria cri) {
 		
 		log.info("get total count");
+		
 		return mapper.getTotalCount(cri);
 		
 	}
+
+	@Override
+	public List<BoardAttachVO> getAttachList(Long bno) {
+
+		log.info("get Attach list by bno" + bno);
+		
+		return attachMapper.findByBno(bno);
+	}
+	
+	
 
 
 }
