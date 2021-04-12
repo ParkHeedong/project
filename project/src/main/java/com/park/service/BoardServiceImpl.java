@@ -70,12 +70,27 @@ public class BoardServiceImpl implements BoardService {
 		
 	}
 
+	//기존의 첨부파일 관련 데이터를 삭제한 후 다시 첨부파일 데이터를 추가하는 방식으로 수정
 	@Override
 	public boolean modify(BoardVO board) {
 
 		log.info("modify.........." + board);
 		
-		return mapper.update(board) == 1; //정상적으로 수정,삭제가 이루어지면 1이라는 값이 반환되기 때문에 '=='연산자를 이용해서 true/false를 처리할 수 있다.
+		attachMapper.deleteAll(board.getBno());
+		
+		boolean modifyResult = mapper.update(board) == 1;
+		
+		if(modifyResult && board.getAttachList() != null && board.getAttachList().size() > 0) {
+			
+			board.getAttachList().forEach(attach -> {
+				
+				attach.setBno(board.getBno());
+				attachMapper.insert(attach);
+			});
+		}
+		
+		return modifyResult;
+		//return mapper.update(board) == 1; //정상적으로 수정,삭제가 이루어지면 1이라는 값이 반환되기 때문에 '=='연산자를 이용해서 true/false를 처리할 수 있다.
 	}
 
 	@Transactional
